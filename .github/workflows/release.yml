@@ -49,12 +49,13 @@ jobs:
         with:
             versionSpec: '6.0.0'
 
-
       - name: Print Folder Tree
         uses: jaywcjlove/github-action-folder-tree@main
+        id: tree
         with:
             exclude: ".git|.github|.vscode|.idea|bin|obj|packages|node_modules|wwwroot"
             depth: 2
+            path: ./
 
     #   - name: Determine Version
     #     id: version_step # step id used as a reference for output values
@@ -63,7 +64,7 @@ jobs:
     #         useConfigFile: true
 
       - name: Restore Workload
-        run: dotnet workload restore --locked-mode
+        run: dotnet workload restore
 
       - name: Restore Packages
         run: dotnet restore --locked-mode

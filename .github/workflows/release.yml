@@ -74,6 +74,6 @@ jobs:
 
     #   - name: Trust HTTPS certificate
     #     run: dotnet dev-certs https --trust
-
+        
     #   - name: Run tests
     #     run: dotnet test --no-build --configuration Release --verbosity normal

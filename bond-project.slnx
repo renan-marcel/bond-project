@@ -1,4 +1,17 @@
 <Solution>
-  <Folder Name="/solution itens/" />
-  <Folder Name="/src/" />
+  <Folder Name="/solution itens/">
+    <File Path=".dockerignore" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Bond-Project.Aspire/Bond-Project.Aspire.ApiService/Bond-Project.Aspire.ApiService.csproj" />
+    <Project Path="src/Bond-Project.Aspire/Bond-Project.Aspire.AppHost/Bond-Project.Aspire.AppHost.csproj" Id="cfa1b774-f43a-42d6-93b8-0bdfab5e622e" />
+    <Project Path="src/Bond-Project.Aspire/Bond-Project.Aspire.ServiceDefaults/Bond-Project.Aspire.ServiceDefaults.csproj" />
+    <Project Path="src/Bond-Project.Aspire/Bond-Project.Aspire.Web/Bond-Project.Aspire.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="src/Bond-Project.Aspire/Bond-Project.Aspire.Tests/Bond-Project.Aspire.Tests.csproj" />
+  </Folder>
 </Solution>

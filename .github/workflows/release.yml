@@ -31,19 +31,18 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
             dotnet-version: '9.0.x'
-            cache: true
 
         # 3. Cache dos pacotes NuGet
         # A chave de cache é baseada no hash do arquivo de lock de pacotes.
         # Se o arquivo packages.lock.json não for encontrado, ele usa um fallback
         # para os arquivos .csproj, garantindo que o cache seja invalidado
         # quando as dependências mudarem.
-    #   - name: Cache NuGet packages
-    #     uses: actions/cache@v4
-    #     with:
-    #         path: ~/.nuget/packages
-    #         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-    #         restore-keys: ${{ runner.os }}-nuget-
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+            path: ~/.nuget/packages
+            key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+            restore-keys: ${{ runner.os }}-nuget-
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v3.2.1
@@ -55,7 +54,7 @@ jobs:
         id: tree
         with:
             exclude: ".git|.github|.vscode|.idea|bin|obj|packages|node_modules|wwwroot"
-            depth: 2
+            depth: 1
             path: ./
 
     #   - name: Determine Version

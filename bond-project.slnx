@@ -1,9 +1,14 @@
 <Solution>
   <Folder Name="/solution itens/">
     <File Path=".dockerignore" />
+    <File Path=".github/workflows/release.yml" />
     <File Path=".gitignore" />
     <File Path="Directory.Packages.props" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/solution itens/.github/" />
+  <Folder Name="/solution itens/.github/workflows/">
+    <File Path=".github/workflows/release.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Bond-Project.Aspire/Bond-Project.Aspire.ApiService/Bond-Project.Aspire.ApiService.csproj" />

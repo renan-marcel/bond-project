@@ -12,30 +12,67 @@ on:
         required: false
         default: "BondService"
 
+env:
+    NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+
 jobs:
   build:
     runs-on: [ubuntu-latest]
 
-    steps:          
-      - name: Checkout code
+
+    steps:
+        # 1. Clona o repositório para o ambiente de execução
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+        # 2. Configura o ambiente .NET 9
       - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
             dotnet-version: '9.0.x'
 
-      - name: Restore Workload
-        run: dotnet workload restore
+        # 3. Cache dos pacotes NuGet
+        # A chave de cache é baseada no hash do arquivo de lock de pacotes.
+        # Se o arquivo packages.lock.json não for encontrado, ele usa um fallback
+        # para os arquivos .csproj, garantindo que o cache seja invalidado
+        # quando as dependências mudarem.
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+            path: ~/.nuget/packages
+            key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+            restore-keys: ${{ runner.os }}-nuget-
 
-      - name: Restore Packages
-        run: dotnet restore
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.2.1
+        with:
+            versionSpec: '6.0.0'
 
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
 
-      - name: Trust HTTPS certificate
-        run: dotnet dev-certs https --trust
+      - name: Print Folder Tree
+        uses: jaywcjlove/github-action-folder-tree@main
+        with:
+            exclude: ".git|.github|.vscode|.idea|bin|obj|packages|node_modules|wwwroot"
+            depth: 2
+
+    #   - name: Determine Version
+    #     id: version_step # step id used as a reference for output values
+    #     uses: gittools/actions/gitversion/execute@v3.2.1
+    #     with:
+    #         useConfigFile: true
+
+    #   - name: Restore Workload
+    #     run: dotnet workload restore
+
+    #   - name: Restore Packages
+    #     run: dotnet restore
+
+    #   - name: Build
+    #     run: dotnet build --no-restore --configuration Release
+
+    #   - name: Trust HTTPS certificate
+    #     run: dotnet dev-certs https --trust
 
     #   - name: Run tests
     #     run: dotnet test --no-build --configuration Release --verbosity normal

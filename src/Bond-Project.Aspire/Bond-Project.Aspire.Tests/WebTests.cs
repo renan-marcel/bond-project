@@ -2,7 +2,7 @@ namespace Bond_Project.Aspire.Tests;
 
 public class WebTests
 {
-    [Fact]
+    [Test]
     public async Task GetWebResourceRootReturnsOkStatusCode()
     {
         // Arrange
@@ -11,7 +11,6 @@ public class WebTests
         {
             clientBuilder.AddStandardResilienceHandler();
         });
-        // To output logs to the xUnit.net ITestOutputHelper, consider adding a package from https://www.nuget.org/packages?q=xunit+logging
 
         await using var app = await appHost.BuildAsync();
         var resourceNotificationService = app.Services.GetRequiredService<ResourceNotificationService>();
@@ -23,6 +22,41 @@ public class WebTests
         var response = await httpClient.GetAsync("/");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
+
+    [Test]
+    public async Task CanGetWeatherForecast()
+    {
+        // Arrange
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Bond_Project_Aspire_AppHost>();
+        appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
+        {
+            clientBuilder.AddStandardResilienceHandler();
+        });
+
+        await using var app = await appHost.BuildAsync();
+        await app.StartAsync();
+
+        var resourceNotificationService = app.Services.GetRequiredService<ResourceNotificationService>();
+        await resourceNotificationService.WaitForResourceAsync("apiservice", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+
+        // Act
+        var httpClient = app.CreateHttpClient("apiservice");
+        var response = await httpClient.GetAsync("/weatherforecast");
+
+        // Assert
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+        var forecasts = await response.Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>();
+        Assert.That(forecasts, Is.Not.Null);
+
+        // Arrange
+        var expectedCount = 5;
+
+        var actualCount = forecasts.Count();
+        Assert.That(actualCount, Is.EqualTo(expectedCount));
+    }
+
+    record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary);
 }
